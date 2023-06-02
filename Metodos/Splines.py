@@ -39,7 +39,7 @@ def spline_sujeto(fx,v,fpx0,fpx1 ):
 
     inter = []
     fxinter = []
-
+    prettysplines =[]
     hi =[]
     for i in range(0,len(v)-1):
         inter.append((v[i],v[i+1]))
@@ -98,7 +98,8 @@ def spline_sujeto(fx,v,fpx0,fpx1 ):
     x = sy.symbols('x')
     spl = []
     for i in range(0,len(inter)):
-        spl.append(fx[i]+ (b[i]*(x-v[i]))+(c[i]*((x-v[i])**2)) + (d[i]*((x-v[i])**3)))
+        spl.append(sy.expand(fx[i]+ (b[i]*(x-v[i]))+(c[i]*((x-v[i])**2)) + (d[i]*((x-v[i])**3))))
+        prettysplines.append(sy.latex(sy.re(sy.expand(fx[i]+ (b[i]*(x-v[i]))+(c[i]*((x-v[i])**2)) + (d[i]*((x-v[i])**3))))))
 
     #pprint(Matrix(spl))
 
@@ -113,7 +114,7 @@ def spline_sujeto(fx,v,fpx0,fpx1 ):
 
     p2 = get_sympy_subplots(p)
     p2.plot(v,fx,"o")
-    return spl,p2
+    return spl,p2,prettysplines,hi
 
 def main_menu():
     os.system(CLEARW)
@@ -139,6 +140,7 @@ def main_menu():
     return op
 
 def metodo():
+    os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
     print("|         INTERPOLACIÓN POR SPLINES CÚBICOS       |")
@@ -155,6 +157,168 @@ def metodo():
         except:
             print('Un error ha ocurrido (Ingrese un valor numerico) :(')
             continue
+
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|        INTERPOLACIÓN POR SPLINES CÚBICOS        |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("|  Por favor, ingrese los puntos (x_i, y_i)       |")
+    print("|  separados por coma 'x,y':                      |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+    xs = []
+    fxs = []
+    for i in range(num_puntos):
+        while True:
+            try:
+                ite = 'Ingrese el punto (x_'+str(i)+',y_'+str(i)+'): '
+                s =str(input(ite))
+                x,y = s.split(',')
+                xs.append(float(x))
+                fxs.append(float(y))
+                break
+            except Exception as e:
+                print('Un error ha ocurrido (Ingrese un valores numericos separados por coma) :(')
+                print(e)
+
+    os.system(CLEARW)
+    points = pd.DataFrame({'x_i': xs , 'f(x_i)': fxs})
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|        INTERPOLACIÓN POR SPLINES CÚBICOS        |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("|  ¿Los datos ingresados son correctos?           |")
+    print("|  Por favor, responda con 's' (sí) o 'n' (no):   |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       ):
+        print(points)
+
+    fix = input(': ')
+
+    while fix != 's' and fix != 'n':
+        fix = input(': ')
+
+    if fix == 'n':
+        while True:
+            try:
+                index = int(input('Ingrese el indice que desea modificar: '))
+                if index >= 0 and index < num_puntos:
+                    try:
+                        nidex = str(input('Ingrese el nuevo valor del punto (x_'+str(index)+',y_'+str(index)+'): '))
+                        x,y = nidex.split(',')
+                        xs[index] = float(x)
+                        fxs[index] = float(y)
+                    except:
+                        print('Un error ha ocurrido (Ingrese un valores numericos separados por coma) :(')
+                        continue
+                else:
+                    print('Ingrese un indice valido')
+                    continue
+
+                nit = str(input('''Desea modificar otro elemento responda con 's' (sí) o 'n' (no): '''))
+                if nit.lower() == 's':
+                    continue
+
+
+
+
+                break
+            except:
+                continue
+
+
+    method = spline_sujeto(fxs,xs,-1,-1)
+    intervals = [[xs[i-1],xs[i]] for i in range(1,num_puntos)]
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|        INTERPOLACIÓN POR SPLINES CÚBICOS        |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("|   Los splines están dados por:                  |")
+    print("|                                                 |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+
+    splines = pd.DataFrame({'Spline': method[0], 'Intervalos': intervals,'h_i': method[3]})
+
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       ):
+        print(points)
+
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       ):
+        print(splines)
+
+    print('Los splines son: ')
+    for j in range(len(method[0])):
+        print(str(j)+': ')
+        sy.pprint(method[0][j],use_unicode=False)
+
+    input('Presione enter para continuar')
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|        INTERPOLACIÓN POR SPLINES CÚBICOS        |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("| ¿Desea graficar los splines y los puntos dados? |")
+    print("| Por favor, responda con 's' (sí) o 'n' (no):    |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    try:
+        plots= str(input(': '))
+
+        while plots != 's' and plots != 'n':
+            plots= str(input(': '))
+        if plots.lower() == 's':
+            print('-Para continuar cierre la ventana con el grafico-')
+            method[1].show()
+
+    except:
+        print('Algo salio mal al graficar :(')
+
+
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|        INTERPOLACIÓN POR SPLINES CÚBICOS        |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("| ¿Desea realizar otro ajuste con otra tabla      |")
+    print("| de valores?                                     |")
+    print("| Por favor, responda con 's' (sí) o 'n' (no):    |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    try:
+        newtable= str(input(': '))
+
+        while newtable != 's' and newtable != 'n':
+            newtable= str(input(': '))
+        if newtable.lower() == 's':
+            metodo()
+        else:
+            return
+    except:
+        return
+
+
+
 
 
 
