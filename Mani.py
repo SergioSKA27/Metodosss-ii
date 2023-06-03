@@ -168,6 +168,11 @@ def get_sympy_subplots(plot:Plot):
 
 
 def main_menu_newton():
+    """
+    This function displays a menu for the Newton method and prompts the user to select an option, returning the selected
+    option.
+    :return: the user's choice from the main menu for the Newton method, either 1 or 2.
+    """
     os.system(CLEARW)
     print('__________________________________________________')
     print('|                                                 |')
@@ -191,6 +196,11 @@ def main_menu_newton():
     return op
 
 def metodo_newton():
+    """
+    This function implements the Newton's method for solving systems of equations and allows the user to select a system,
+    input initial approximations, set maximum iterations and error tolerance, and optionally plot the solution.
+    :return: The function does not have a return statement, so it does not return anything.
+    """
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                  |")
@@ -579,6 +589,11 @@ def Newton_interpolation(fx,v):
 
 
 def main_menu_interpolation():
+    """
+    This function displays a menu for polynomial approximation and prompts the user to select an option, returning the
+    selected option.
+    :return: the user's choice from the main menu, either 1 or 2.
+    """
     os.system(CLEARW)
     print('__________________________________________________')
     print('|                                                 |')
@@ -602,6 +617,11 @@ def main_menu_interpolation():
     return op
 
 def metodo_interpolation():
+    """
+    This function performs polynomial interpolation using the Newton interpolation method, allowing the user to input the
+    number of points and their values, modify them if necessary, and interpolate new values.
+    :return: The function does not have a return statement, so it returns None by default.
+    """
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -729,7 +749,7 @@ def metodo_interpolation():
     sy.pprint(method[0],use_unicode=False)
 
 
-    input('Presione enter para continuar')
+    input('Presione enter para continuar....')
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -747,8 +767,10 @@ def metodo_interpolation():
         while plots != 's' and plots != 'n':
             plots= str(input(': '))
         if plots.lower() == 's':
-            print('-Para continuar cierre la ventana con el grafico-')
-            method[1].show()
+            #print('-Para continuar cierre la ventana con el grafico-')
+            sy.textplot(method[0],min(xs),max(xs))
+            input('Presione enter para continuar....')
+
 
     except:
         print('Algo salio mal al graficar :(')
@@ -906,6 +928,10 @@ def spline_sujeto(fx,v,fpx0,fpx1 ):
     return spl,p2,prettysplines,hi
 
 def main_menu_splines():
+    """
+    This function displays a menu for selecting a method or exiting, and returns the user's choice.
+    :return: the user's choice from the main menu for cubic spline fitting, either 1 or 2.
+    """
     os.system(CLEARW)
     print('__________________________________________________')
     print('|                                                 |')
@@ -929,6 +955,11 @@ def main_menu_splines():
     return op
 
 def metodo_splines():
+    """
+    This function implements the cubic spline interpolation method to fit a curve to a set of given points and allows the
+    user to modify the input points, display the resulting splines, and optionally plot the points and splines.
+    :return: The function does not have a return statement, so it returns None by default.
+    """
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -1057,7 +1088,7 @@ def metodo_splines():
         print(str(j)+': ')
         sy.pprint(method[0][j],use_unicode=False)
 
-    input('Presione enter para continuar')
+    input('Presione enter para continuar....')
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -1075,8 +1106,12 @@ def metodo_splines():
         while plots != 's' and plots != 'n':
             plots= str(input(': '))
         if plots.lower() == 's':
-            print('-Para continuar cierre la ventana con el grafico-')
-            method[1].show()
+            #print('-Para continuar cierre la ventana con el grafico-')
+            for s in range(len(method[0])):
+                print('Spline ',s,' :')
+                sy.textplot(method[0][s],intervals[s][0],intervals[s][1])
+
+        input('Presione enter para continuar....')
 
     except:
         print('Algo salio mal al graficar :(')
@@ -1108,6 +1143,194 @@ def metodo_splines():
 
 
 
+def integracion_simpson_3_8(a, b, f, n):
+    """
+    This function calculates the definite integral of a function using Simpson's 3/8 rule with a given number of
+    subintervals.
+
+    :param a: The lower limit of integration
+    :param b: The upper limit of integration
+    :param f: a function to be integrated
+    :param n: the number of subintervals used in the Simpson's 3/8 rule for numerical integration
+    """
+
+    if n % 3 != 0:
+        raise ValueError(
+            "El número de subintervalos debe ser divisible por 3.")
+
+    h = (b - a) / n
+    xs = a
+
+    x = sy.symbols('x')
+    suma = f.subs({x: a}).evalf()
+
+    for i in range(1, n):
+        xs += h
+        coeficiente = 3 if i % 3 == 0 else 2
+        suma += coeficiente * f.subs({x: xs})
+
+    suma += f.subs({x: b}).evalf()
+
+    integral = (3 * h / 8) * suma
+    print('El resultado es :', integral)
+    input()
+
+def integrate_simpson_13(f, a, b, n):
+    h = (b - a) / n
+    x = sy.symbols('x')
+    # Calcular los valores de la función en los puntos a, b y los puntos intermedios
+    x_values = [a + i * h for i in range(n+1)]
+    y_values = [f.subs({x: t}).evalf() for t in x_values]
+
+    # Verificar si el número de puntos es impar y ajustar n si es necesario
+    if n % 2 != 0:
+        n += 1
+        h = (b - a) / n
+
+    # Aplicar la fórmula de Simpson 1/3
+    result = (h / 3) * sum(
+        y_values[i] + 4 * y_values[i + 1] + y_values[i + 2]
+        for i in range(0, n, 2)
+    )
+
+    print('El resultado es :', result)
+    input()
+
+def main_menu_integral():
+    os.system(CLEARW)
+    print('__________________________________________________')
+    print('|                                                 |')
+    print('|           INTEGRACION NUMERICA                  |')
+    print('|_________________________________________________|')
+    print('|                                                 |')
+    print('|             [1] Método                          |')
+    print('|             [2] Salir                           |')
+    print('|                                                 |')
+    print('|_________________________________________________|')
+    while True:
+        try:
+            op = int(input('Seleccione una opcion del menu: '))
+            while op != 1 and op != 2:
+                op = int(input('Seleccione una opcion del menu: '))
+            break
+        except:
+            print('Un error ha ocurrido (Ingrese un valor numerico) :(')
+            continue
+
+    return op
+
+def metodo_integral():
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|              INTEGRACIÓN NUMÉRICA               |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("|        Selecciona una función:                  |")
+    print("|                                                 |")
+    print("|   1. x^4*((3+2x^2)^(1/2)/3)                     |")
+    print("|   2. x^2/(x^2+4)^(1/3)                          |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    funcs = [sy.parse_expr('x**4*((3+2*x**2)**(1/2)/3)'),
+             sy.parse_expr('x**2/(x**2+4)**(1/3)')]
+    while True:
+        try:
+            func = int(input(': '))
+            if func != 1 and func != 2:
+                continue
+            break
+        except:
+            print('Un error ha ocurrido (Ingrese un valor numerico) :(')
+            continue
+
+
+    print('La funcion seleccionada es: ')
+    sy.pprint(funcs[func-1])
+    print('')
+    sy.textplot(funcs[func-1],-10,10)
+
+    input('Presione enter para continuar....')
+
+
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|              INTEGRACIÓN NUMÉRICA               |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("|      Por favor, ingrese el intervalo [a, b]:    |")
+    print("|      Separado por coma:                         |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    while True:
+        try:
+            inter = str(input(': '))
+            interval = list(map(float,inter.split(',')))
+            break
+        except:
+            print('Un error ha ocurrido (Ingrese valores numericos separados por coma) :(')
+            continue
+
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|              INTEGRACIÓN NUMÉRICA               |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("| Por favor, ingrese el número de subintervalos:  |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    while True:
+        try:
+            numinter = int(input(': '))
+            break
+        except:
+            print('Un error ha ocurrido (Ingrese un valor numerico) :(')
+            continue
+
+
+    os.system(CLEARW)
+
+    print('---------------------')
+    try:
+        integrate_simpson_13(funcs[func-1], interval[0], interval[1],numinter)
+    except:
+        try:
+            integracion_simpson_3_8(interval[0],interval[1],funcs[func-1],numinter)
+        except:
+            print('Algo Salio Mal :(')
+        pass
+
+    input('Presione enter para continuar....')
+
+
+
+    os.system(CLEARW)
+    print(" _________________________________________________")
+    print("|                                                 |")
+    print("|              INTEGRACIÓN NUMÉRICA               |")
+    print("|_________________________________________________|")
+    print("|                                                 |")
+    print("| ¿Desea realizar otro ajuste con otra tabla      |")
+    print("| de valores?                                     |")
+    print("| Por favor, responda con 's' (sí) o 'n' (no):    |")
+    print("|                                                 |")
+    print("|_________________________________________________|")
+
+    try:
+        newtable= str(input(': '))
+
+        while newtable != 's' and newtable != 'n':
+            newtable= str(input(': '))
+        if newtable.lower() == 's':
+            metodo_integral()
+        else:
+            return
+    except:
+        return
 
 
 
@@ -1135,8 +1358,7 @@ def mostrar_menu():
     print("|      - [2.2] Ajuste por spline cúbico                   |")
     print("|  [3] Diferenciación e integración (datos igualmente     |")
     print("|      espaciados)                                        |")
-    print("|      - [3.1] Diferenciación centrada                    |")
-    print("|      - [3.2] Integración                                |")
+    print("|      - [3.1] Integración                                |")
     print("|                                                         |")
     print("|  [4] Salir                                              |")
     print("|                                                         |")
@@ -1176,6 +1398,12 @@ if __name__ == '__main__':
             op = main_menu_splines()
             if op == 1:
                 metodo_splines()
+            else:
+                continue
+        elif o == 3.1:
+            op = main_menu_integral()
+            if op == 1:
+                metodo_integral()
             else:
                 continue
         elif o == 4:

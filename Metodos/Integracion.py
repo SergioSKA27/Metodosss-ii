@@ -79,6 +79,8 @@ def metodo():
     while True:
         try:
             func = int(input(': '))
+            if func != 1 and func != 2:
+                continue
             break
         except:
             print('Un error ha ocurrido (Ingrese un valor numerico) :(')
@@ -86,9 +88,9 @@ def metodo():
 
 
     print('La funcion seleccionada es: ')
-    sy.pprint(funcs[func])
+    sy.pprint(funcs[func-1])
     print('')
-    sy.textplot(funcs[func],-10,10)
+    sy.textplot(funcs[func-1],-10,10)
 
     input('Presione enter para continuar....')
 
@@ -135,7 +137,7 @@ def metodo():
 
     print('---------------------')
 
-    integrate_simpson_13(funcs[func], interval[0], interval[1],numinter)
+    integrate_simpson_13(funcs[func-1], interval[0], interval[1],numinter)
 
 
     os.system(CLEARW)
