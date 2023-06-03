@@ -5,8 +5,7 @@ from sympy.plotting.plot import MatplotlibBackend, Plot
 from sympy.plotting import plot3d,plot3d_parametric_line
 import platform
 import os
-from tabulate import tabulate
-import streamlit as st
+
 
 if platform.system() == 'Linux':
     CLEARW = 'clear'
@@ -212,7 +211,6 @@ def metodo():
     print("|    f(x,y,z) = x^2 - x - 12y + 1 = 0              |")
     print("|    f(x,y,z) = 3x^2 - 12x + y^2 - 3z^2 + 8 = 0    |")
     print("|                                                  |")
-    print("| 5. Otro sistema                                  |")
     print("|                                                  |")
     print("|__________________________________________________|")
 
@@ -387,8 +385,8 @@ def metodo():
     print('|           APROXIMACION POLINOMIAL               |')
     print("|_________________________________________________|")
     print("|                                                 |")
-    print("| ¿Desea realizar otra aproximacion con otra tabla|")
-    print("| de valores?                                     |")
+    print("| ¿Desea realizar otra aproximacion con otro      |")
+    print("| sistema?                                        |")
     print("| Por favor, responda con 's' (sí) o 'n' (no):    |")
     print("|                                                 |")
     print("|_________________________________________________|")

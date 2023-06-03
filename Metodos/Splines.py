@@ -4,8 +4,7 @@ import pandas as pd
 from sympy.plotting.plot import MatplotlibBackend, Plot
 import platform
 import os
-from tabulate import tabulate
-import streamlit as st
+
 
 if platform.system() == 'Linux':
     CLEARW = 'clear'
