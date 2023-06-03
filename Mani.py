@@ -4,8 +4,6 @@ import pandas as pd
 from sympy.plotting.plot import MatplotlibBackend, Plot
 import platform
 import os
-from tabulate import tabulate
-import streamlit as st
 from sympy.plotting import plot3d,plot3d_parametric_line
 
 if platform.system() == 'Linux':
