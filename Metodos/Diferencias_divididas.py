@@ -334,7 +334,7 @@ def metodo():
     sy.pprint(method[0],use_unicode=False)
 
 
-    input('Presione enter para continuar')
+    input('Presione enter para continuar....')
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -352,8 +352,10 @@ def metodo():
         while plots != 's' and plots != 'n':
             plots= str(input(': '))
         if plots.lower() == 's':
-            print('-Para continuar cierre la ventana con el grafico-')
-            method[1].show()
+            #print('-Para continuar cierre la ventana con el grafico-')
+            sy.textplot(method[0],min(xs),max(xs))
+            input('Presione enter para continuar....')
+
 
     except:
         print('Algo salio mal al graficar :(')

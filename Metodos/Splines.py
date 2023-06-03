@@ -106,9 +106,11 @@ def spline_sujeto(fx,v,fpx0,fpx1 ):
 
     p = sy.plot(spl[0], (x,inter[0][0],inter[0][1]),show=False)
 
+
     for i in range(1, len(spl)):
         paux = sy.plot(spl[i],(x,inter[i][0],inter[i][1]),show=False)
         p.append(paux[0])
+
 
 
     p2 = get_sympy_subplots(p)
@@ -267,7 +269,7 @@ def metodo():
         print(str(j)+': ')
         sy.pprint(method[0][j],use_unicode=False)
 
-    input('Presione enter para continuar')
+    input('Presione enter para continuar....')
     os.system(CLEARW)
     print(" _________________________________________________")
     print("|                                                 |")
@@ -285,8 +287,12 @@ def metodo():
         while plots != 's' and plots != 'n':
             plots= str(input(': '))
         if plots.lower() == 's':
-            print('-Para continuar cierre la ventana con el grafico-')
-            method[1].show()
+            #print('-Para continuar cierre la ventana con el grafico-')
+            for s in range(len(method[0])):
+                print('Spline ',s,' :')
+                sy.textplot(method[0][s],intervals[s][0],intervals[s][1])
+
+        input('Presione enter para continuar....')
 
     except:
         print('Algo salio mal al graficar :(')
